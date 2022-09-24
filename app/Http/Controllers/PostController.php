@@ -16,7 +16,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('posts.index');
+        $posts = Post::with('user')->latest()->paginate(4);
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -41,7 +42,7 @@ class PostController extends Controller
         $post->user_id = $request->user()->id;
 
         $file = $request->file('image');
-         $post->image = self::createFileName($file);
+        $post->image = self::createFileName($file);
 
         // トランザクション開始
         DB::beginTransaction();
@@ -146,7 +147,7 @@ class PostController extends Controller
         } catch (\Exception $e) {
             // トランザクション終了(失敗)
             DB::rollback();
-           //失敗時に 前の画面へ
+            //失敗時に 前の画面へ
             return back()->withInput()->withErrors($e->getMessage());
         }
 
@@ -165,8 +166,8 @@ class PostController extends Controller
         //
     }
 
-     private static function createFileName($file)
-     {
+    private static function createFileName($file)
+    {
         return date('YmdHis') . '_' . $file->getClientOriginalName();
-}
+    }
 }
