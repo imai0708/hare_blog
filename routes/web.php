@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
-use GuzzleHttp\Middleware;
+use App\Http\Controllers\CommentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,11 @@ Route::resource('posts', PostController::class)
 // 非ログイン時
 Route::resource('posts', PostController::class)
     ->only(['show', 'index']);
+
+
+Route::resource('posts.comments', CommentController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->middleware('auth');
+
+
 require __DIR__ . '/auth.php';
